@@ -118,7 +118,7 @@ void vampir::groups_writer::write_data()
         for (auto& elem : groups)
         {
             file << "BEGIN FUNCTION_GROUP " << elem << "\n";
-            file << "\t NAME=" << elem << "\n";
+            file << "\t NAME=" << elem << "*\n";
             file << "END FUNCTION_GROUP\n";
         }
         file.close();

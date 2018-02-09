@@ -35,6 +35,8 @@
 #ifndef INCLUDE_vampir_INTERFACE_CPP_
 #define INCLUDE_vampir_INTERFACE_CPP_
 
+#include <environment.hpp>
+#include <exception.hpp>
 #include <groups_writer.hpp>
 #include <log.hpp>
 #include <scorep.hpp>
@@ -83,7 +85,7 @@ namespace call
         scorep::calls->SCOREP_Ipc_Send(buf, count, datatype, dest);
     }
 
-    void ipc_recv(const void* buf, int count, SCOREP_Ipc_Datatype datatype, int source)
+    void ipc_recv(void* buf, int count, SCOREP_Ipc_Datatype datatype, int source)
     {
         scorep::calls->SCOREP_Ipc_Recv(buf, count, datatype, source);
     }

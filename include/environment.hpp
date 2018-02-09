@@ -18,7 +18,7 @@ namespace environment
 {
     inline std::string get(std::string name, std::string default_value, bool legacy = false)
     {
-        std::string full_name = std::string("SCOREP_vampir_") + name;
+        std::string full_name = std::string("SCOREP_VAMPIR_GROUPS_WRITER_") + name;
         vampir::logging::debug() << "[UTIL] Access to environment variable '" << full_name << "'";
 
         char* tmp = std::getenv(full_name.c_str());

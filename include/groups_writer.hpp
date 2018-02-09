@@ -9,13 +9,17 @@
 #define INCLUDE_GROUPS_WRITER_HPP_
 
 #include <cassert>
+#include <memory>
 #include <string>
 #include <unordered_set>
+
+#include <scorep.hpp>
 
 namespace vampir
 {
 class groups_writer
 {
+public:
     groups_writer() = default;
     ~groups_writer() = default;
 

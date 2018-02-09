@@ -6,8 +6,11 @@
  */
 #include <cstring>
 #include <fstream>
-#include <groups_writer.hpp>
 #include <memory>
+#include <sstream>
+#include <vector>
+
+#include <groups_writer.hpp>
 
 namespace vampir
 {
@@ -50,7 +53,7 @@ void groups_writer::pre_unify()
 
             for (int i = 1; i < size; i++)
             {
-                char* ext_group = malloc(group_sizes[i - 1] * sizeof(char));
+                char* ext_group = (char*)(malloc(group_sizes[i - 1] * sizeof(char)));
                 scorep::call::ipc_recv(&ext_group, group_sizes[i - 1], SCOREP_IPC_CHAR, i);
                 auto ext_group_str = std::string(ext_group, group_sizes[i - 1]);
                 free(ext_group);
@@ -68,13 +71,13 @@ void groups_writer::pre_unify()
             std::stringstream ss;
             for (auto& elem : groups)
             {
-                ss << '\n';
+                ss << elem << '\n';
             }
             auto group = ss.str();
             std::uint64_t group_size = std::strlen(group.c_str()) + 1;
 
             scorep::call::ipc_send(&group_size, 1, SCOREP_IPC_CHAR, 0);
-            scorep::call::ipc_send(&group.c_str(), group_size, SCOREP_IPC_CHAR, 0);
+            scorep::call::ipc_send(group.c_str(), group_size, SCOREP_IPC_CHAR, 0);
         }
     }
 }

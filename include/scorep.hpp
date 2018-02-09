@@ -62,6 +62,8 @@ namespace call
 
     int ipc_get_size();
     int ipc_get_rank();
+    void ipc_send(const void* buf, int count, SCOREP_Ipc_Datatype datatype, int dest);
+    void ipc_recv(void* buf, int count, SCOREP_Ipc_Datatype datatype, int source);
 
 } // namespace call
 

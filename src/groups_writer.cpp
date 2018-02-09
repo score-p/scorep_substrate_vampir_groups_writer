@@ -11,21 +11,29 @@
 #include <vector>
 
 #include <groups_writer.hpp>
+#include <log.hpp>
 
 namespace vampir
 {
 std::unique_ptr<groups_writer> groups_writer::_instance_;
 
+void groups_writer::init_mpp()
+{
+}
+
 void groups_writer::new_definition_handle(SCOREP_AnyHandle handle, SCOREP_HandleType type)
 {
-    if (SCOREP_REGION_FUNCTION == scorep::call::region_handle_get_type(handle))
+    if (type == SCOREP_HANDLE_TYPE_REGION)
     {
-        auto region_name = scorep::call::region_handle_get_name(handle);
-        auto split_pos = region_name.rfind(":"); // for python modules
-        auto group_name = region_name.substr(0, split_pos);
-        if (groups.find(group_name) == groups.end())
+        if (SCOREP_REGION_FUNCTION == scorep::call::region_handle_get_type(handle))
         {
-            groups.insert(group_name);
+            auto region_name = scorep::call::region_handle_get_name(handle);
+            auto split_pos = region_name.rfind(":"); // for python modules
+            auto group_name = region_name.substr(0, split_pos);
+            if (groups.find(group_name) == groups.end())
+            {
+                groups.insert(group_name);
+            }
         }
     }
 }
@@ -39,6 +47,7 @@ void groups_writer::pre_unify()
     if (size > 1)
     {
 
+        vampir::logging::debug() << "got " << size << " processes";
         auto rank = scorep::call::ipc_get_rank();
         if (rank == 0)
         {
@@ -49,12 +58,14 @@ void groups_writer::pre_unify()
                 std::uint64_t buf;
                 scorep::call::ipc_recv(&buf, 1, SCOREP_IPC_UINT64_T, i);
                 group_sizes.push_back(buf);
+                vampir::logging::debug() << "got size: " << buf << " from rank " << i;
             }
 
             for (int i = 1; i < size; i++)
             {
                 char* ext_group = (char*)(malloc(group_sizes[i - 1] * sizeof(char)));
-                scorep::call::ipc_recv(&ext_group, group_sizes[i - 1], SCOREP_IPC_CHAR, i);
+                scorep::call::ipc_recv(ext_group, group_sizes[i - 1], SCOREP_IPC_CHAR, i);
+                vampir::logging::debug() << "got group from rank " << i;
                 auto ext_group_str = std::string(ext_group, group_sizes[i - 1]);
                 free(ext_group);
 
@@ -62,7 +73,10 @@ void groups_writer::pre_unify()
                 std::string item;
                 while (std::getline(ss, item, '\n'))
                 {
-                    groups.insert(item);
+                    if (item.length() > 0)
+                    {
+                        groups.insert(item);
+                    }
                 }
             }
         }
@@ -76,7 +90,9 @@ void groups_writer::pre_unify()
             auto group = ss.str();
             std::uint64_t group_size = std::strlen(group.c_str()) + 1;
 
-            scorep::call::ipc_send(&group_size, 1, SCOREP_IPC_CHAR, 0);
+            vampir::logging::debug() << "send size: " << group_size << " from rank " << rank;
+            scorep::call::ipc_send(&group_size, 1, SCOREP_IPC_UINT64_T, 0);
+            vampir::logging::debug() << "send group from rank " << rank;
             scorep::call::ipc_send(group.c_str(), group_size, SCOREP_IPC_CHAR, 0);
         }
     }

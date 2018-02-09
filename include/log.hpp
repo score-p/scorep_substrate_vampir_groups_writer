@@ -33,7 +33,6 @@
 
 #include <nitro/log/sink/stderr.hpp>
 
-#include <nitro/log/attribute/hostname.hpp>
 #include <nitro/log/attribute/message.hpp>
 #include <nitro/log/attribute/pid.hpp>
 #include <nitro/log/attribute/rank.hpp>
@@ -58,9 +57,9 @@ namespace log
     namespace detail
     {
 
-        typedef nitro::log::record<nitro::log::message_attribute, nitro::log::hostname_attribute,
-                                   nitro::log::severity_attribute, nitro::log::tag_attribute,
-                                   nitro::log::rank_attribute, nitro::log::pid_attribute>
+        typedef nitro::log::record<nitro::log::message_attribute, nitro::log::severity_attribute,
+                                   nitro::log::tag_attribute, nitro::log::rank_attribute,
+                                   nitro::log::pid_attribute>
 
             record;
 
@@ -90,9 +89,8 @@ namespace log
                     {
                         first = false;
                     }
-                    out << "Vampir groups writer plugin:[" << r.hostname() << "][P:" << r.pid()
-                        << "][R:" << r.rank() << "][" << r.severity() << "][" << r.tag()
-                        << "]: " << line;
+                    out << "Vampir groups writer plugin:[P:" << r.pid() << "][R:" << r.rank()
+                        << "][" << r.severity() << "][" << r.tag() << "]: " << line;
                 }
                 out << "\n";
                 return out.str();

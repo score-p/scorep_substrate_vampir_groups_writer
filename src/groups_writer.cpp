@@ -29,9 +29,9 @@ void groups_writer::new_definition_handle(SCOREP_AnyHandle handle, SCOREP_Handle
         {
             auto region_name = scorep::call::region_handle_get_name(handle);
             auto split_pos = region_name.rfind(":"); // for python modules
-            auto group_name = region_name.substr(0, split_pos);
-            if (groups.find(group_name) == groups.end())
+            if (split_pos != std::string::npos)
             {
+                auto group_name = region_name.substr(0, split_pos);
                 groups.insert(group_name);
             }
         }
@@ -65,7 +65,7 @@ void groups_writer::pre_unify()
             {
                 char* ext_group = (char*)(malloc(group_sizes[i - 1] * sizeof(char)));
                 scorep::call::ipc_recv(ext_group, group_sizes[i - 1], SCOREP_IPC_CHAR, i);
-                vampir::logging::debug() << "got group from rank " << i;
+                logging::debug() << "got group from rank: " << i;
                 auto ext_group_str = std::string(ext_group, group_sizes[i - 1]);
                 free(ext_group);
 
@@ -75,6 +75,7 @@ void groups_writer::pre_unify()
                 {
                     if (item.length() > 0)
                     {
+                        logging::debug() << "Add Item: \"" << item << "\"";
                         groups.insert(item);
                     }
                 }
@@ -88,7 +89,7 @@ void groups_writer::pre_unify()
                 ss << elem << '\n';
             }
             auto group = ss.str();
-            std::uint64_t group_size = std::strlen(group.c_str()) + 1;
+            std::uint64_t group_size = std::strlen(group.c_str());
 
             vampir::logging::debug() << "send size: " << group_size << " from rank " << rank;
             scorep::call::ipc_send(&group_size, 1, SCOREP_IPC_UINT64_T, 0);

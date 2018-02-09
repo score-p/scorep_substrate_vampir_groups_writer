@@ -126,8 +126,9 @@ namespace callback
         {
             try
             {
+                vampir::log::set_min_severity_level(nitro::log::severity_level::warn);
                 auto log_verbose = vampir::environment::get("VERBOSE", "WARN");
-                auto level = severity_from_string(log_verbose, nitro::log::severity_level::info);
+                auto level = severity_from_string(log_verbose, nitro::log::severity_level::warn);
                 vampir::log::set_min_severity_level(level);
 
                 vampir::logging::info() << "[Score-P] Initalising vampir";

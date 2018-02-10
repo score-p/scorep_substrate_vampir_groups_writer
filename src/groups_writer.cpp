@@ -28,10 +28,15 @@ void groups_writer::new_definition_handle(SCOREP_AnyHandle handle, SCOREP_Handle
         if (SCOREP_REGION_FUNCTION == scorep::call::region_handle_get_type(handle))
         {
             auto region_name = scorep::call::region_handle_get_name(handle);
-            auto split_pos = region_name.rfind(":"); // for python modules
-            if (split_pos != std::string::npos)
+            auto module_pos = region_name.find(":"); // check for python modules
+            if (module_pos != std::string::npos)
             {
-                auto group_name = region_name.substr(0, split_pos);
+                auto main_module_pos = region_name.find(".");
+                if (main_module_pos == std::string::npos)
+                {
+                    main_module_pos = module_pos;
+                }
+                auto group_name = region_name.substr(0, main_module_pos);
                 groups.insert(group_name);
             }
         }

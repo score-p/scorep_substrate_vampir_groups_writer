@@ -1,6 +1,6 @@
 [submodule "nitro"]
 	path = nitro
-	url = git@github.com:tud-zih-energy/nitro.git
+	url = https://github.com/tud-zih-energy/nitro.git
 [submodule "scorep_plugin_common"]
 	path = scorep_plugin_common
-	url = git@github.com:score-p/scorep_plugin_common.git
+	url = https://github.com/score-p/scorep_plugin_common.git

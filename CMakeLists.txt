@@ -33,7 +33,7 @@ SET(SOURCES src/scorep.cpp
 add_library(scorep_substrate_vampir_groups_writer SHARED  ${SOURCES})
 
 target_include_directories(scorep_substrate_vampir_groups_writer PRIVATE "${CMAKE_SOURCE_DIR}/include/")
-target_link_libraries(scorep_substrate_vampir_groups_writer PRIVATE Nitro::Log)
+target_link_libraries(scorep_substrate_vampir_groups_writer PRIVATE Nitro::nitro-log)
 target_compile_features(scorep_substrate_vampir_groups_writer PUBLIC cxx_std_14)
 target_compile_options(scorep_substrate_vampir_groups_writer PRIVATE $<$<CONFIG:Debug>:-Wall -pedantic -Wextra>)
 

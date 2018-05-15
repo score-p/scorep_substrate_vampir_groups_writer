@@ -183,6 +183,18 @@ namespace callback
             }
         }
 
+        static bool get_requirement(SCOREP_Substrates_RequirementFlag flag)
+        {
+            if (flag == SCOREP_SUBSTRATES_REQUIREMENT_CREATE_EXPERIMENT_DIRECTORY)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         static void write_data(void)
         {
             vampir::logging::debug() << "write_data called";
@@ -271,6 +283,8 @@ static SCOREP_SubstratePluginInfo get_info()
     memset(&info, 0, sizeof(SCOREP_SubstratePluginInfo));
 
     info.plugin_version = SCOREP_SUBSTRATE_PLUGIN_VERSION;
+
+    info.get_requirement = scorep::callback::management::get_requirement;
 
     info.init = scorep::callback::management::init;
 

@@ -105,10 +105,9 @@ void groups_writer::pre_unify()
 }
 void vampir::groups_writer::write_data()
 {
-    auto size = scorep::call::ipc_get_size();
     auto rank = scorep::call::ipc_get_rank();
 
-    if ((size == 0) or (rank == 0))
+    if (rank == 0)
     {
         auto filename = scorep::call::experiment_dir_name() + "/scorep.fgp";
         std::ofstream file;
